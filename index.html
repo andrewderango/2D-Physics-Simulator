@@ -2,6 +2,22 @@
 <html>
 <head>
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+    </style>
 </head>
 <body>
     <svg id="canvas" width="800" height="600"></svg>
@@ -40,8 +56,8 @@
         }
 
         function simulate_gravity(objects) {
-            const time_step = 0.01; // seconds per time step
-            const simulation_time = 5; // seconds to simulate
+            const time_step = 0.001; // seconds per time step
+            const simulation_time = 100; // seconds to simulate
 
             // Lists to store the coordinates
             const obj_coords = new Array(objects.length).fill(0).map(() => []);
@@ -93,9 +109,9 @@
         // Animate the circles
         var t = d3.interval((elapsed) => {
             circles
-                .attr("cx", (d, i) => xScale(d[Math.floor(elapsed / 100)][0]))
-                .attr("cy", (d, i) => yScale(d[Math.floor(elapsed / 100)][1]));
-        }, 100);
+                .attr("cx", (d, i) => xScale(d[Math.floor(elapsed / 1)][0]))
+                .attr("cy", (d, i) => yScale(d[Math.floor(elapsed / 1)][1]));
+        }, 1);
     </script>
 </body>
 </html>
