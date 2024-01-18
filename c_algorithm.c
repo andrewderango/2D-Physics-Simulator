@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 typedef struct {
     double x;
@@ -38,6 +39,16 @@ void simulate_gravity(Body *objects, int num_objects) {
     double time_step = 0.01; // seconds per time step
     double simulation_time = 5; // seconds to simulate
 
+    // Open the CSV file
+    FILE *file = fopen("simulation_data.csv", "w");
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    // Write the header to the CSV file
+    fprintf(file, "Time,Object,Mass,X,Y,VX,VY,AX,AY\n");
+
     // Arrays to store the coordinates
     double obj_coords[num_objects][2];
 
@@ -45,6 +56,11 @@ void simulate_gravity(Body *objects, int num_objects) {
         // Print the body's coordinates
         printf("Time: %.3f seconds\n", 0.0);
         printf("Body %d: (%.3f, %.3f)\n\n", i + 1, objects[i].x, objects[i].y);
+
+        // Write the data to the CSV file
+        fprintf(file, "%.3f,%d,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
+                0.0, i + 1, objects[i].mass, objects[i].x, objects[i].y,
+                objects[i].velocity_x, objects[i].velocity_y, objects[i].acceleration_x, objects[i].acceleration_y);
 
         // Store the initial coordinates
         obj_coords[i][0] = objects[i].x;
@@ -79,11 +95,22 @@ void simulate_gravity(Body *objects, int num_objects) {
             if (i == num_objects - 1) {
                 printf("\n");
             }
+
+            // Write the data to the CSV file
+            fprintf(file, "%.3f,%d,%f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n",
+                    timestep * time_step, i + 1, objects[i].mass, objects[i].x, objects[i].y,
+                    objects[i].velocity_x, objects[i].velocity_y, objects[i].acceleration_x, objects[i].acceleration_y);
         }
     }
+
+    // Close the CSV file
+    fclose(file);
 }
 
 int main() {
+    // Start measuring the execution time
+    clock_t start_time = clock();
+
     // Example with 3 objects
     Body obj1 = {0, -5, 1000, 3, 0, 0, 0};  // Body 1 with coordinates (0, -5), mass 1000, and initial velocity (3, 0)
     Body obj2 = {0, 0, 1e12, 0, 0, 0, 0};  // Body 2 with coordinates (0, 0), mass 1e12
@@ -93,6 +120,11 @@ int main() {
     int num_objects = sizeof(objects) / sizeof(objects[0]);
 
     simulate_gravity(objects, num_objects);
+
+    // End measuring the execution time
+    clock_t end_time = clock();
+    double execution_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Execution time: %.3f seconds\n", execution_time);
 
     return 0;
 }
