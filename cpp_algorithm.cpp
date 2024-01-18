@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <chrono>
 
 struct Body {
     double x;
@@ -84,6 +85,9 @@ void simulate_gravity(Body* objects, int num_objects) {
 }
 
 int main() {
+    // Start the timer
+    auto start = std::chrono::high_resolution_clock::now();
+
     // Example with 3 objects
     Body obj1 = {0, -5, 1000, 3, 0, 0, 0};  // Body 1 with coordinates (0, -5), mass 1000, and initial velocity (3, 0)
     Body obj2 = {0, 0, 1e12, 0, 0, 0, 0};  // Body 2 with coordinates (0, 0), mass 1e12
@@ -93,6 +97,11 @@ int main() {
     int num_objects = sizeof(objects) / sizeof(objects[0]);
 
     simulate_gravity(objects, num_objects);
+
+    // End the timer and calculate the duration
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Execution time: " << duration.count() << " microseconds" << std::endl;
 
     return 0;
 }

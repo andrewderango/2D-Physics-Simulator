@@ -87,6 +87,9 @@ class Main {
     }
 
     public static void main(String[] args) {
+        // Start the timer
+        long startTime = System.currentTimeMillis();
+
         // Example with 3 objects
         Body obj1 = new Body();
         obj1.x = 0;
@@ -119,5 +122,11 @@ class Main {
         int num_objects = objects.length;
 
         simulateGravity(objects, num_objects);
+
+        // Stop the timer and calculate the elapsed time
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+
+        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 }
