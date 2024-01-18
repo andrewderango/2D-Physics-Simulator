@@ -18,6 +18,10 @@
             background-color: white;
         }
 
+        h1 {
+            text-align: center;
+        }
+
         #startButton {
             padding: 10px 20px;
             font-size: 16px;
@@ -62,6 +66,28 @@
             font-size: 12px;
             fill: #333;
         }
+
+        #options {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #options-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #checkbox-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
@@ -69,15 +95,28 @@
     <div id="container">
         <h1>2D Physics Simulator</h1>
         <div id="options">
-            <button id="startButton">Start Simulation</button>
-            <label for="toggleLabelCheckbox">Show Labels</label>
-            <input type="checkbox" id="toggleLabelCheckbox" checked>
-            <label for="toggleGridlinesCheckbox">Show Gridlines</label>
-            <input type="checkbox" id="toggleGridlinesCheckbox">
-            <button id="downloadCSVButton">Export to CSV</button>
+            <div id="options-container">
+                <div id="checkbox-container">
+                    <label for="toggleLabelCheckbox">Show Labels</label>
+                    <input type="checkbox" id="toggleLabelCheckbox" checked>
+                    <label for="toggleGridlinesCheckbox">Show Gridlines</label>
+                    <input type="checkbox" id="toggleGridlinesCheckbox">
+                </div>
+                <div id="timer-container">
+                    <span id="timeCounter">Elapsed time: 0.000</span>
+                </div>
+            </div>
         </div>
         <div id="simulation">
             <svg id="canvas" width="800" height="600"></svg>
+        </div>
+        <div id="button-container">
+            <div id="start">
+                <button id="startButton">Start Simulation</button>
+            </div>
+            <div id="download">
+                <button id="downloadCSVButton">Export to CSV</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
@@ -184,6 +223,9 @@
             downloadCSV(objects, objectCoordinates, initialStates);
         });
 
+        let timeCounter = 0;
+        let intervalId = null;
+
         const obj1 = new Body("Sun", 0, 0, 1e12, 0, 0); // Body 1 with coordinates (0, 0), mass 1e12
         const obj2 = new Body("Ceres", 0, -5, 1000, 3, 0); // Body 2 with coordinates (0, -5), mass 1000, and initial velocity (3, 0)
         const obj3 = new Body("Vesta", 0, 2, 1000, -5.6, 0); // Body 3 with coordinates (0, 2), mass 1000, and initial velocity (-5.6, 0)
@@ -253,6 +295,12 @@
             startButton.disabled = true; // Disable the button
             startButton.classList.add("disabled");
 
+            // Start the time counter
+            intervalId = setInterval(() => {
+                timeCounter += 0.009;
+                document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
+            }, 9);
+
             t = d3.interval((elapsed) => {
                 groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(elapsed / 1)][0])}, ${yScale(d[Math.floor(elapsed / 1)][1])})`);
             }, 1);
@@ -261,6 +309,8 @@
                 startButton.disabled = false; // Enable the button after the simulation is complete
                 startButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
                 t.stop(); // Stop the animation
+                clearInterval(intervalId); // Stop the time counter
+                intervalId = null; // Reset the interval ID
             }, 100000); // Match the simulation time
         }
 
