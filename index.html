@@ -33,6 +33,18 @@
             margin-bottom: 10px;
         }
 
+        #pauseButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #FFC107;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
         #downloadCSVButton {
             padding: 10px 20px;
             font-size: 16px;
@@ -60,6 +72,7 @@
         .grid-line {
             stroke: #ccc;
             stroke-width: 1px;
+            stroke-dasharray: 2;
         }
 
         .grid-label {
@@ -113,6 +126,7 @@
         <div id="button-container">
             <div id="start">
                 <button id="startButton">Start Simulation</button>
+                <button id="pauseButton" onclick="pauseSimulation()">Pause</button>
             </div>
             <div id="download">
                 <button id="downloadCSVButton">Export to CSV</button>
@@ -313,6 +327,23 @@
                 intervalId = null; // Reset the interval ID
             }, 100000); // Match the simulation time
         }
+
+        var isPaused = false;
+        var pauseButton = document.getElementById("pauseButton");
+
+        function pauseSimulation() {
+            if (isPaused) {
+                isPaused = false;
+                pauseButton.innerText = "Pause";
+                t.restart();
+            } else {
+                isPaused = true;
+                pauseButton.innerText = "Resume";
+                t.stop();
+            }
+        }
+
+pauseButton.addEventListener("click", pauseSimulation);
 
         document.getElementById("startButton").addEventListener("click", startSimulation);
 
