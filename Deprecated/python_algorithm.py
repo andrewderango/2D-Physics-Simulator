@@ -102,11 +102,12 @@ def simulate_gravity(objects):
     ax2.legend()
     plt.show()
 
-# Example with 3 objects
-obj1 = Body(0, -5, 1000, velocity_x=3, velocity_y=0)  # Body 1 with coordinates (0, -5), mass 1000, and initial velocity (3, 0)
-obj2 = Body(0, 0, 1e12, velocity_x=0, velocity_y=0)  # Body 2 with coordinates (0, 0), mass 1e12
-obj3 = Body(0, 2, 1000, velocity_x=-5.6, velocity_y=0)  # Body 3 with coordinates (0, 2), mass 1000, and initial velocity (-5.6, 0)
+if __name__ == '__main__':
+    # Example with 3 objects
+    obj1 = Body(0, -5, 1000, velocity_x=3, velocity_y=0)  # Body 1 with coordinates (0, -5), mass 1000, and initial velocity (3, 0)
+    obj2 = Body(0, 0, 1e12, velocity_x=0, velocity_y=0)  # Body 2 with coordinates (0, 0), mass 1e12
+    obj3 = Body(0, 2, 1000, velocity_x=-5.6, velocity_y=0)  # Body 3 with coordinates (0, 2), mass 1000, and initial velocity (-5.6, 0)
 
-objects = [obj1, obj2, obj3]
+    objects = [obj1, obj2, obj3]
 
-simulate_gravity(objects)
+    simulate_gravity(objects)
