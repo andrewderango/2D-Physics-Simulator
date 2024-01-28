@@ -310,7 +310,7 @@
             startButton.classList.add("disabled");
 
             // Start or resume the time counter
-            timeCounter = isResuming ? timeCounter : 0;
+            timeCounter = isResuming ? 0 : 0;
             intervalId = setInterval(() => {
                 timeCounter += 0.009;
                 document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
