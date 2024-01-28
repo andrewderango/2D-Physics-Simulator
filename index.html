@@ -3,66 +3,54 @@
 <head>
     <style>
         body {
-            background-color: #f2f2f2;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: #f5f5dc;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         #canvas {
             border: 1px solid #ccc;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         h1 {
             text-align: center;
+            font-size: 2.5em; /* Larger font size */
+            text-transform: uppercase; /* Uppercase letters */
+            letter-spacing: 5px; /* Space between letters */
         }
 
-        #startButton {
+        #startButton, #pauseButton, #downloadCSVButton {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5dc;
+            color: #333; /* Dark grey text */
+            border: none; /* Remove border */
             cursor: pointer;
             border-radius: 4px;
             margin-bottom: 10px;
+            transition: all 0.3s ease; /* Transition for hover effect */
+            text-transform: uppercase; /* Uppercase letters */
+            letter-spacing: 2px; /* Space between letters */
+            outline: none;
+            transition: all 0.3s ease;
         }
 
-        #pauseButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #FFC107;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-left: 10px;
-            margin-bottom: 10px;
+        #startButton:hover, #pauseButton:hover, #downloadCSVButton:hover {
+            background: #f5f5dc;
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         }
 
-        #downloadCSVButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        #startButton.disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
-        #pauseButton:disabled {
-            background-color: #ccc;
+        #startButton.disabled, #pauseButton:disabled {
+            background-color: #999;
             cursor: not-allowed;
         }
 
@@ -82,7 +70,7 @@
 
         .grid-label {
             font-size: 12px;
-            fill: #333;
+            fill: #ccc;
         }
 
         #options {
@@ -286,11 +274,11 @@
 
         // Add labels to the objects
         var labels = groups.append("text")
-            .attr("x", (d, i) => obj_mass_scaled[i]*0.8 + 1) // Move the labels to the right based on the size of the circles
-            .attr("y", (d, i) => -obj_mass_scaled[i]*0.8 - 1) // Move the labels up based on the size of the circles
+            .attr("x", (d, i) => obj_mass_scaled[i] * 0.8 + 1) // Move the labels to the right based on the size of the circles
+            .attr("y", (d, i) => -obj_mass_scaled[i] * 0.8 - 1) // Move the labels up based on the size of the circles
             .attr("text-anchor", "start") // Set the text anchor to start
-            .text((d, i) => objects[i].name) // Use the object's name as the label
-            .style("display", "block"); // Show labels by default
+            .attr("fill", "#f5f5dc")
+            .text((d, i) => objects[i].name); // Use the object's name as the label
 
         // Toggle labels
         var toggleLabels = true;
@@ -298,6 +286,7 @@
             toggleLabels = !toggleLabels;
             labels.style("display", toggleLabels ? "block" : "none");
         });
+
 
         // Toggle gridlines
         var toggleGridlines = true;
@@ -409,7 +398,8 @@
             .attr("y", 590)
             .attr("text-anchor", "middle")
             .text(d => d)
-            .style("display", toggleGridlines ? "none" : "block");
+            .style("display", toggleGridlines ? "none" : "block")
+            .attr("fill", "#f5f5dc"); // Add this line
 
         gridlines.selectAll(".y-grid-label")
             .data(yScale.ticks())
@@ -420,7 +410,14 @@
             .attr("y", d => yScale(d))
             .attr("text-anchor", "start")
             .text(d => d)
-            .style("display", toggleGridlines ? "none" : "block");
+            .style("display", toggleGridlines ? "none" : "block")
+            .attr("fill", "#f5f5dc"); // Add this line
+
+        // Create a circle for each object
+        groups.append("circle")
+            .attr("r", (d, i) => obj_mass_scaled[i])
+            .attr("fill", "#f5f5dc"); // Change the fill color
+
     </script>
 </body>
 </html>
