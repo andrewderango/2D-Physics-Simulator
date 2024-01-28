@@ -1,0 +1,92 @@
+body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: #f5f5dc;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+#canvas {
+    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em; /* Larger font size */
+    text-transform: uppercase; /* Uppercase letters */
+    letter-spacing: 5px; /* Space between letters */
+}
+
+#startButton, #pauseButton, #downloadCSVButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    background: #f5f5dc;
+    color: #333; /* Dark grey text */
+    border: none; /* Remove border */
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease; /* Transition for hover effect */
+    text-transform: uppercase; /* Uppercase letters */
+    letter-spacing: 2px; /* Space between letters */
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#startButton:hover, #pauseButton:hover, #downloadCSVButton:hover {
+    background: #f5f5dc;
+    transform: scale(1.03);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+#startButton.disabled, #pauseButton:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+#toggleLabelCheckbox {
+    margin-left: 5px;
+}
+
+label {
+    margin-left: 10px;
+}
+
+.grid-line {
+    stroke: #ccc;
+    stroke-width: 1px;
+    stroke-dasharray: 2;
+}
+
+.grid-label {
+    font-size: 12px;
+    fill: #ccc;
+}
+
+#options {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+#button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#options-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+#checkbox-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
