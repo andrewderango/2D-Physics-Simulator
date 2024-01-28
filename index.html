@@ -304,48 +304,55 @@
         // Animate the circles
         var t;
 
-        function startSimulation() {
+        function startSimulation(isResuming) {
             const startButton = document.getElementById("startButton");
             startButton.disabled = true; // Disable the button
             startButton.classList.add("disabled");
 
-            // Start the time counter
-            intervalId = setInterval(() => {
-                timeCounter += 0.009;
-                document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
-            }, 9);
+            if (!isResuming) {
+                // Start the time counter
+                intervalId = setInterval(() => {
+                    timeCounter += 0.009;
+                    document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
+                }, 9);
+            }
 
             t = d3.interval((elapsed) => {
                 groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(elapsed / 1)][0])}, ${yScale(d[Math.floor(elapsed / 1)][1])})`);
             }, 1);
 
-            setTimeout(() => {
-                startButton.disabled = false; // Enable the button after the simulation is complete
-                startButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
-                t.stop(); // Stop the animation
-                clearInterval(intervalId); // Stop the time counter
-                intervalId = null; // Reset the interval ID
-            }, 100000); // Match the simulation time
-        }
-
-        var isPaused = false;
-        var pauseButton = document.getElementById("pauseButton");
-
-        function pauseSimulation() {
-            if (isPaused) {
-                isPaused = false;
-                pauseButton.innerText = "Pause";
-                t.restart();
-            } else {
-                isPaused = true;
-                pauseButton.innerText = "Resume";
-                t.stop();
+            if (!isResuming) {
+                setTimeout(() => {
+                    startButton.disabled = false; // Enable the button after the simulation is complete
+                    startButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
+                    t.stop(); // Stop the animation
+                    clearInterval(intervalId); // Stop the time counter
+                    intervalId = null; // Reset the interval ID
+                }, 100000); // Match the simulation time
             }
         }
 
-pauseButton.addEventListener("click", pauseSimulation);
+        document.addEventListener("DOMContentLoaded", function() {
+            var isPaused = false;
+            var pauseButton = document.getElementById("pauseButton");
 
-        document.getElementById("startButton").addEventListener("click", startSimulation);
+            function pauseSimulation() {
+                if (isPaused) {
+                    isPaused = false;
+                    pauseButton.innerText = "Pause";
+                    startSimulation(true); // Resume the simulation
+                } else {
+                    isPaused = true;
+                    pauseButton.innerText = "Resume";
+                    t.stop();
+                    clearInterval(intervalId);
+                }
+            }
+
+            pauseButton.addEventListener("click", pauseSimulation);
+        });
+
+        document.getElementById("startButton").addEventListener("click", function() { startSimulation(false); });
 
         // Add vertical and horizontal gridlines
         var gridlines = d3.select("#canvas").insert("g", ":first-child").attr("class", "gridlines");
