@@ -237,7 +237,6 @@
             downloadCSV(objects, objectCoordinates, initialStates);
         });
 
-        let timeCounter = 0;
         let intervalId = null;
 
         const obj1 = new Body("Sun", 0, 0, 1e12, 0, 0); // Body 1 with coordinates (0, 0), mass 1e12
@@ -301,24 +300,26 @@
             d3.selectAll(".grid-label").style("display", toggleGridlines ? "none" : "block");
         });
 
-        // Animate the circles
         var t;
+        var elapsedPausedTime = 0; // Variable to store the elapsed time when pausing the simulation
+        var timeCounter; // Variable to store the elapsed time when pausing the simulation
 
         function startSimulation(isResuming) {
             const startButton = document.getElementById("startButton");
             startButton.disabled = true; // Disable the button
             startButton.classList.add("disabled");
 
-            if (!isResuming) {
-                // Start the time counter
-                intervalId = setInterval(() => {
-                    timeCounter += 0.009;
-                    document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
-                }, 9);
-            }
+            // Start or resume the time counter
+            timeCounter = isResuming ? timeCounter : 0;
+            intervalId = setInterval(() => {
+                timeCounter += 0.009;
+                document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
+            }, 9);
 
             t = d3.interval((elapsed) => {
-                groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(elapsed / 1)][0])}, ${yScale(d[Math.floor(elapsed / 1)][1])})`);
+                // Calculate the correct position based on the elapsed time and the paused time
+                const adjustedElapsed = elapsed + elapsedPausedTime;
+                groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(adjustedElapsed / 1)][0])}, ${yScale(d[Math.floor(adjustedElapsed / 1)][1])})`);
             }, 1);
 
             if (!isResuming) {
@@ -346,6 +347,7 @@
                     pauseButton.innerText = "Resume";
                     t.stop();
                     clearInterval(intervalId);
+                    elapsedPausedTime += timeCounter * 1000; // Store the elapsed time in milliseconds
                 }
             }
 
