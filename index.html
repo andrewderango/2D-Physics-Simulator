@@ -61,6 +61,11 @@
             cursor: not-allowed;
         }
 
+        #pauseButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
         #toggleLabelCheckbox {
             margin-left: 5px;
         }
@@ -101,6 +106,7 @@
             gap: 10px;
             align-items: center;
         }
+
     </style>
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
@@ -126,7 +132,7 @@
         <div id="button-container">
             <div id="start">
                 <button id="startButton">Start Simulation</button>
-                <button id="pauseButton" onclick="pauseSimulation()">Pause</button>
+                <button id="pauseButton" disabled>Pause</button>
             </div>
             <div id="download">
                 <button id="downloadCSVButton">Export to CSV</button>
@@ -254,6 +260,7 @@
         // const obj7 = new Body("Europa", -3, -3, 750, 3, -3);
         // const obj8 = new Body("Io", -3.54, 3.54, 900, 2, 2);
         // const objects = [obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8];
+
         const initialStates = objects.map(obj => ({ x: obj.x, y: obj.y, vx: obj.velocity_x, vy: obj.velocity_y }));
 
         // Normalize the mass values, apply a logarithmic transformation, and add a constant
@@ -302,15 +309,22 @@
 
         var t;
         var elapsedPausedTime = 0; // Variable to store the elapsed time when pausing the simulation
-        var timeCounter; // Variable to store the elapsed time when pausing the simulation
+        var timeCounter = 0; // Variable to store the elapsed time when pausing the simulation
+        var isPaused = false;
+        var lastElapsed = 0; // Variable to store the last elapsed time from the d3.interval function
 
         function startSimulation(isResuming) {
             const startButton = document.getElementById("startButton");
             startButton.disabled = true; // Disable the button
             startButton.classList.add("disabled");
+            const pauseButton = document.getElementById("pauseButton");
+            pauseButton.disabled = false; // Enable the button
+            pauseButton.classList.remove("disabled");
 
             // Start or resume the time counter
-            timeCounter = isResuming ? 0 : 0;
+            if (!isResuming) {
+                timeCounter = 0;
+            }
             intervalId = setInterval(() => {
                 timeCounter += 0.009;
                 document.getElementById('timeCounter').innerText = "Elapsed time: " + timeCounter.toFixed(3);
@@ -319,6 +333,8 @@
             t = d3.interval((elapsed) => {
                 // Calculate the correct position based on the elapsed time and the paused time
                 const adjustedElapsed = elapsed + elapsedPausedTime;
+                lastElapsed = elapsed; // Store the last elapsed time
+                console.log(adjustedElapsed);
                 groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(adjustedElapsed / 1)][0])}, ${yScale(d[Math.floor(adjustedElapsed / 1)][1])})`);
             }, 1);
 
@@ -326,6 +342,8 @@
                 setTimeout(() => {
                     startButton.disabled = false; // Enable the button after the simulation is complete
                     startButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
+                    pauseButton.disabled = true; // Disable the button
+                    pauseButton.classList.add("disabled"); // Add the "disabled" class to change the appearance
                     t.stop(); // Stop the animation
                     clearInterval(intervalId); // Stop the time counter
                     intervalId = null; // Reset the interval ID
@@ -333,24 +351,22 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            var isPaused = false;
-            var pauseButton = document.getElementById("pauseButton");
-
-            function pauseSimulation() {
-                if (isPaused) {
-                    isPaused = false;
-                    pauseButton.innerText = "Pause";
-                    startSimulation(true); // Resume the simulation
-                } else {
-                    isPaused = true;
-                    pauseButton.innerText = "Resume";
-                    t.stop();
-                    clearInterval(intervalId);
-                    elapsedPausedTime += timeCounter * 1000; // Store the elapsed time in milliseconds
-                }
+        function pauseSimulation() {
+            if (isPaused) {
+                isPaused = false;
+                pauseButton.innerText = "Pause";
+                startSimulation(true); // Resume the simulation
+            } else {
+                isPaused = true;
+                pauseButton.innerText = "Resume";
+                t.stop();
+                clearInterval(intervalId);
+                elapsedPausedTime += lastElapsed; // Store the last elapsed time
             }
+        }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            pauseButton = document.getElementById("pauseButton");
             pauseButton.addEventListener("click", pauseSimulation);
         });
 
