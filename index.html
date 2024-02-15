@@ -5,6 +5,24 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
+    <div id="menu">
+        <h2>Customize Simulation</h2>
+        <form id="customObjectForm" class="vertical-form">
+            <label for="objectName">Object Name</label>
+            <input type="text" id="objectName" name="objectName">
+            <label for="objectWeight">Object Weight</label>
+            <input type="number" id="objectWeight" name="objectWeight">
+            <label for="xPosition">x-Position</label>
+            <input type="number" id="xPosition" name="objectXPosition">
+            <label for="yPosition">y-Position</label>
+            <input type="number" id="yPosition" name="objectYPosition">
+            <label for="xVelocity">x-Velocity</label>
+            <input type="number" id="xVelocity" name="objectXVelocity">
+            <label for="yPosition">y-Velocity</label>
+            <input type="number" id="yVelocity" name="objectYVelocity">
+            <button id="addObject">Add Object</button>
+        </form>
+    </div>
     <div id="container">
         <h1>2D Physics Simulator</h1>
         <div id="options">
