@@ -175,6 +175,9 @@ function startSimulation(isResuming) {
     const startButton = document.getElementById("startButton");
     startButton.disabled = true; // Disable the button
     startButton.classList.add("disabled");
+    const addButton = document.getElementById("addObject");
+    addButton.disabled = true; // Disable the button
+    addButton.classList.add("disabled");
     const pauseButton = document.getElementById("pauseButton");
     pauseButton.disabled = false; // Enable the button
     pauseButton.classList.remove("disabled");
@@ -192,7 +195,7 @@ function startSimulation(isResuming) {
         // Calculate the correct position based on the elapsed time and the paused time
         const adjustedElapsed = elapsed + elapsedPausedTime;
         lastElapsed = elapsed; // Store the last elapsed time
-        console.log(adjustedElapsed);
+        // console.log(adjustedElapsed);
         groups.attr("transform", (d, i) => `translate(${xScale(d[Math.floor(adjustedElapsed / 1)][0])}, ${yScale(d[Math.floor(adjustedElapsed / 1)][1])})`);
     }, 1);
 
@@ -200,6 +203,8 @@ function startSimulation(isResuming) {
         setTimeout(() => {
             startButton.disabled = false; // Enable the button after the simulation is complete
             startButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
+            addButton.disabled = false; // Enable the button after the simulation is complete
+            addButton.classList.remove("disabled"); // Remove the "disabled" class to revert the appearance
             pauseButton.disabled = true; // Disable the button
             pauseButton.classList.add("disabled"); // Add the "disabled" class to change the appearance
             t.stop(); // Stop the animation
@@ -286,3 +291,39 @@ gridlines.selectAll(".y-grid-label")
 groups.append("circle")
     .attr("r", (d, i) => obj_mass_scaled[i])
     .attr("fill", "#f5f5dc"); // Change the fill color
+
+document.getElementById('customObjectForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from being submitted normally
+
+    // Get the form input values
+    var objectName = document.getElementById('objectName').value;
+    var objectWeight = document.getElementById('objectWeight').value;
+    var xPosition = document.getElementById('xPosition').value;
+    var yPosition = document.getElementById('yPosition').value;
+    var xVelocity = document.getElementById('xVelocity').value;
+    var yVelocity = document.getElementById('yVelocity').value;
+
+    // Create a new Body object
+    var newObject = new Body(objectName, xPosition, yPosition, objectWeight, xVelocity, yVelocity);
+
+    // Compute size
+    obj_mass_scaled.push(Math.log(newObject.mass / Math.min(...objects.map(obj => obj.mass))) * 1 + 3);
+
+    console.log(obj_mass_scaled[obj_mass_scaled.length - 1]);
+
+    // add circle for new obj
+    var newGroup = d3.select("#canvas").append("g").attr("transform", `translate(${xScale(newObject.x)}, ${yScale(newObject.y)})`);
+    newGroup.append("circle").attr("r", obj_mass_scaled[obj_mass_scaled.length - 1]).attr("fill", "#f5f5dc");
+    newGroup.append("text").attr("x", obj_mass_scaled[obj_mass_scaled.length - 1] * 0.8 + 1).attr("y", -obj_mass_scaled[obj_mass_scaled.length - 1] * 0.8 - 1).attr("text-anchor", "start").attr("fill", "#f5f5dc").text(objectName);
+
+    // Add the new object to the objects array
+    objects.push(newObject);
+
+    // print objects
+    console.log(objects);
+
+    // Re-run the simulation with the updated objects array
+    // This will depend on how your simulation is set up
+    // For example, you might need to call a function like this:
+    // runSimulation(objects);
+});
